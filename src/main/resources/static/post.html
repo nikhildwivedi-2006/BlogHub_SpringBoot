@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BlogHub - Post</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .post-container {
+        display: flex;
+        justify-content: center;
+        padding: 2rem;
+      }
+
+      .post-card {
+        max-width: 900px;
+        width: 100%;
+        background: var(--bg-primary);
+        border-radius: var(--radius-xl);
+        padding: 3rem;
+        box-shadow: var(--shadow-xl);
+        border: 1px solid var(--border-color);
+      }
+
+      .post-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .post-category {
+        background: var(--primary-color);
+        color: white;
+        padding: 0.4rem 0.8rem;
+        border-radius: var(--radius-sm);
+        font-weight: 600;
+        font-size: 0.85rem;
+      }
+
+      .post-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: var(--text-primary);
+        line-height: 1.2;
+      }
+
+      .post-content {
+        line-height: 1.8;
+        font-size: 1.1rem;
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+        white-space: pre-wrap;
+      }
+
+      .post-author {
+        font-size: 1rem;
+        color: var(--text-primary);
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background: var(--bg-secondary);
+        border-radius: var(--radius-md);
+        border-left: 4px solid var(--primary-color);
+      }
+
+      .post-author strong {
+        color: var(--primary-color);
+      }
+
+      .post-actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .btn-secondary {
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
+      }
+      
+      .btn-secondary:hover {
+        background: var(--bg-secondary);
+        transform: translateY(-2px);
+      }
+
+      .btn-edit {
+        background: var(--secondary-color);
+        color: white;
+      }
+      
+      .btn-edit:hover {
+        background: #0d9668;
+        transform: translateY(-2px);
+      }
+
+      .btn-danger {
+        background: var(--danger-color);
+        color: white;
+      }
+      
+      .btn-danger:hover {
+        background: #dc2626;
+        transform: translateY(-2px);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <header class="navbar">
+      <div class="nav-container">
+        <div class="nav-brand">
+          <i class="fas fa-feather-alt"></i>
+          <h1>BlogHub</h1>
+        </div>
+        <nav class="nav-menu">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="posts.html" class="nav-link active">All Posts</a>
+          <a href="categories.html" class="nav-link">Categories</a>
+          <a href="users.html" class="nav-link admin-only">Users</a>
+          <a href="category-create.html" class="nav-link admin-only">Create Category</a>
+          <a href="post-create.html" class="nav-link">Create Post</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="theme-toggle" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div id="toast" class="toast"></div>
+
+    <!-- Post Content -->
+    <main class="post-container">
+      <div class="post-card" id="single-post">
+        <div class="post-info">
+          <div class="post-meta">
+            <span class="post-category" id="post-category">Loading...</span>
+            <span class="post-date" id="post-date">Loading...</span>
+          </div>
+          <h1 class="post-title" id="post-title">Loading...</h1>
+          <div class="post-content" id="post-content">Loading post content...</div>
+          <div class="post-author">
+            <strong><i class="fas fa-user"></i> Author:</strong> 
+            <span id="post-author">Loading...</span>
+          </div>
+          <div class="post-actions">
+            <button id="back-posts" class="btn btn-secondary" onclick="window.location.href='posts.html'">
+              <i class="fas fa-arrow-left"></i> Back to Posts
+            </button>
+            <button id="edit-post" class="btn btn-edit" style="display: none;">
+              <i class="fas fa-edit"></i> Edit Post
+            </button>
+            <button id="delete-post" class="btn btn-danger admin-only" style="display: none;">
+              <i class="fas fa-trash"></i> Delete Post
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script src="js/main.js"></script>
+    <script src="js/post.js"></script>
+    <script>
+      // Check authentication on page load
+      window.addEventListener('DOMContentLoaded', () => {
+        if (!sessionStorage.getItem('userName')) {
+          window.location.href = 'login.html';
+        }
+        updateNavbar();
+        applyRoleBasedUI();
+      });
+    </script>
+  </body>
+</html>

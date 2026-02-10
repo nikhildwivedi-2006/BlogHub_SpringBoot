@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Update Post</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      /* Form Container */
+      .form-container {
+        max-width: 700px;
+        margin: 3rem auto;
+        padding: 2.5rem;
+        background: var(--bg-primary);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+      }
+
+      .form-container h2 {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        color: var(--primary-color);
+      }
+
+      label {
+        display: block;
+        font-weight: 600;
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+      }
+
+      input,
+      textarea,
+      select {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-md);
+        font-size: 1rem;
+        transition: border-color 0.3s, box-shadow 0.3s;
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+      }
+
+      input:focus,
+      textarea:focus,
+      select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        outline: none;
+      }
+
+      button {
+        margin-top: 2rem;
+        width: 100%;
+        padding: 0.85rem;
+        background-color: var(--primary-color);
+        color: #fff;
+        border: none;
+        border-radius: var(--radius-md);
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      button:hover {
+        background-color: var(--primary-dark);
+      }
+
+      #alert-container {
+        margin-bottom: 1rem;
+        text-align: center;
+        font-weight: 600;
+      }
+
+      .alert-success {
+        color: var(--secondary-color);
+      }
+      .alert-error {
+        color: var(--danger-color);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <header class="navbar">
+      <div class="nav-container">
+        <div class="nav-brand">
+          <i class="fas fa-feather-alt"></i>
+          <h1>BlogHub</h1>
+        </div>
+        <nav class="nav-menu">
+          <a href="index.html" class="nav-link active">Home</a>
+          <a href="posts.html" class="nav-link">All Posts</a>
+          <a href="categories.html" class="nav-link">Categories</a>
+          <a href="users.html" class="nav-link">Users</a>
+          <a href="user-create.html" class="nav-link">Create User</a>
+        </nav>
+      </div>
+    </header>
+
+    <!--From-->
+    <main class="form-container">
+      <h2>Update Post</h2>
+      <div id="alert-container"></div>
+
+      <form id="update-post-form">
+        <input type="hidden" id="postId" />
+
+        <label>Title</label>
+        <input type="text" id="title" required />
+
+        <label>Content</label>
+        <textarea id="content" rows="5" required></textarea>
+
+        <label>Category</label>
+        <select id="category" required>
+          <option value="">-- Select Category --</option>
+        </select>
+
+        <label>Author</label>
+        <select id="author" required>
+          <option value="">-- Select Author --</option>
+        </select>
+
+        <button type="submit">Update</button>
+      </form>
+    </main>
+
+    <script>
+      const BASE_URL = "http://localhost:8082/api";
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const postId = urlParams.get("id");
+
+        const form = document.getElementById("update-post-form");
+        const alertContainer = document.getElementById("alert-container");
+
+        const categorySelect = document.getElementById("category");
+        const authorSelect = document.getElementById("author");
+
+        let postData = null;
+
+        // Fetch post details
+        async function loadPost() {
+          try {
+            const res = await fetch(`${BASE_URL}/posts/${postId}`);
+            if (!res.ok) throw new Error("Failed to fetch post data");
+            postData = await res.json();
+
+            document.getElementById("postId").value = postData.id;
+            document.getElementById("title").value = postData.title;
+            document.getElementById("content").value = postData.content;
+          } catch (err) {
+            showAlert(`Post Load Error: ${err.message}`, "error");
+          }
+        }
+
+        // Fetch categories
+        async function loadCategories() {
+          try {
+            const res = await fetch(`${BASE_URL}/categories`);
+            if (!res.ok) throw new Error("Failed to fetch categories");
+            const categories = await res.json();
+
+            categories.forEach((cat) => {
+              const option = document.createElement("option");
+              option.value = cat.id;
+              option.textContent = cat.catName || cat.name;
+              categorySelect.appendChild(option);
+            });
+
+            if (postData) categorySelect.value = postData.categoryId;
+          } catch (err) {
+            showAlert(`Category Load Error: ${err.message}`, "error");
+          }
+        }
+
+        // Fetch users
+        async function loadAuthors() {
+          try {
+            const res = await fetch(`${BASE_URL}/users`);
+            if (!res.ok) throw new Error("Failed to fetch users");
+            const users = await res.json();
+
+            users.forEach((user) => {
+              const option = document.createElement("option");
+              option.value = user.id;
+              option.textContent = user.name;
+              authorSelect.appendChild(option);
+            });
+
+            if (postData) authorSelect.value = postData.authorId;
+          } catch (err) {
+            showAlert(`Users Load Error: ${err.message}`, "error");
+          }
+        }
+
+        function showAlert(message, type = "success") {
+          alertContainer.innerHTML = `<div class="alert-${type}">${message}</div>`;
+          setTimeout(() => (alertContainer.innerHTML = ""), 3000);
+        }
+
+        // Handle form submit
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const payload = {
+            title: document.getElementById("title").value.trim(),
+            content: document.getElementById("content").value.trim(),
+            categoryId: parseInt(categorySelect.value),
+            authorId: parseInt(authorSelect.value),
+          };
+
+          try {
+            const res = await fetch(`${BASE_URL}/posts/${postId}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+
+            if (!res.ok) {
+              const errData = await res.json();
+              throw new Error(errData.message || "Failed to update post");
+            }
+
+            showAlert("Post updated successfully!", "success");
+            setTimeout(() => (window.location.href = "posts.html"), 1500);
+          } catch (err) {
+            showAlert(`Update Error: ${err.message}`, "error");
+          }
+        });
+
+        // Load post first, then categories and users
+        await loadPost();
+        await loadCategories();
+        await loadAuthors();
+      });
+    </script>
+  </body>
+</html>

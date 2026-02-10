@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Categories - BlogHub</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .category-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 1.5rem auto;
+        max-width: 900px;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .search-box {
+        display: flex;
+        flex: 1;
+        max-width: 450px;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+      }
+
+      .search-box input {
+        flex: 1;
+        padding: 0.7rem 1rem;
+        border: none;
+        outline: none;
+        font-size: 1rem;
+        background: transparent;
+        color: var(--text-primary);
+      }
+
+      .search-box i {
+        padding: 0.8rem 1rem;
+        color: var(--text-muted);
+      }
+
+      .btn-create {
+        padding: 0.7rem 1.2rem;
+        background: var(--primary-color);
+        color: #fff;
+        border: none;
+        border-radius: var(--radius-md);
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+        font-weight: 600;
+      }
+
+      .btn-create:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+      }
+
+      .categories-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+        padding: 1rem;
+      }
+
+      .category-card {
+        background: var(--bg-primary);
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
+        box-shadow: var(--shadow-md);
+        text-align: center;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        border: 1px solid var(--border-color);
+      }
+
+      .category-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .category-card h3 {
+        margin-bottom: 0.5rem;
+        font-size: 1.2rem;
+        color: var(--primary-color);
+      }
+
+      .category-card p {
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.7rem;
+      }
+
+      .category-card span {
+        display: block;
+        margin-bottom: 0.7rem;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+      }
+
+      .category-card .delete-btn {
+        margin-top: 0.8rem;
+        padding: 0.5rem 1rem;
+        background: var(--danger-color);
+        color: white;
+        border: none;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+      }
+
+      .category-card .delete-btn:hover {
+        background: #dc2626;
+        transform: translateY(-2px);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <header class="navbar">
+      <div class="nav-container">
+        <div class="nav-brand">
+          <i class="fas fa-feather-alt"></i>
+          <h1>BlogHub</h1>
+        </div>
+        <nav class="nav-menu">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="posts.html" class="nav-link">All Posts</a>
+          <a href="categories.html" class="nav-link active">Categories</a>
+          <a href="users.html" class="nav-link admin-only">Users</a>
+          <a href="category-create.html" class="nav-link admin-only">Create Category</a>
+          <a href="post-create.html" class="nav-link">Create Post</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="theme-toggle" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <section class="page-header">
+        <h1>Categories</h1>
+        <p>Explore posts by category and discover new topics</p>
+
+        <div class="category-actions">
+          <div class="search-box">
+            <input
+              type="text"
+              id="search-category"
+              placeholder="Search categories..."
+            />
+            <i class="fas fa-search"></i>
+          </div>
+
+          <button
+            class="btn-create admin-only"
+            onclick="window.location.href='category-create.html'"
+          >
+            <i class="fas fa-plus"></i> Create New Category
+          </button>
+        </div>
+      </section>
+
+      <section>
+        <div class="categories-grid" id="categories-list">
+          <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            Loading categories...
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="js/main.js"></script>
+    <script src="js/categories.js"></script>
+    <script>
+      // Check authentication on page load
+      window.addEventListener('DOMContentLoaded', () => {
+        if (!sessionStorage.getItem('userName')) {
+          window.location.href = 'login.html';
+        }
+        updateNavbar();
+        applyRoleBasedUI();
+      });
+    </script>
+  </body>
+</html>

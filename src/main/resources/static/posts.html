@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>All Posts - BlogHub</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .posts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+      }
+
+      .post-card {
+        background: var(--bg-primary);
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: var(--shadow-md);
+        transition: transform 0.2s, box-shadow 0.2s;
+        border: 1px solid var(--border-color);
+        cursor: pointer;
+      }
+
+      .post-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .post-meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+        color: var(--text-muted);
+      }
+
+      .post-category {
+        background: var(--primary-color);
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        font-weight: bold;
+        color: white;
+      }
+
+      .post-title {
+        font-size: 1.3rem;
+        margin-bottom: 0.5rem;
+        color: var(--text-primary);
+      }
+
+      .post-excerpt {
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+      }
+
+      .post-actions {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: flex-end;
+      }
+
+      .btn {
+        border: none;
+        border-radius: 6px;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      .btn-edit {
+        background: var(--secondary-color);
+        color: #fff;
+      }
+
+      .btn-edit:hover {
+        background: #0d9668;
+      }
+
+      .btn-danger {
+        background: var(--danger-color);
+        color: #fff;
+      }
+
+      .btn-danger:hover {
+        background: #dc2626;
+      }
+
+      .sort-box {
+        margin-top: 1rem;
+        text-align: center;
+      }
+
+      .sort-box label {
+        color: var(--text-primary);
+        margin-right: 0.5rem;
+        font-weight: 500;
+      }
+
+      .sort-box select {
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-md);
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        font-size: 0.95rem;
+      }
+
+      #pagination {
+        margin-top: 2rem;
+        text-align: center;
+      }
+
+      #pagination button {
+        padding: 0.5rem 1rem;
+        margin: 0 0.3rem;
+        border: 1px solid var(--border-color);
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      #pagination button:hover {
+        background: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+      }
+
+      #pagination button.active {
+        background: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <header class="navbar">
+      <div class="nav-container">
+        <div class="nav-brand">
+          <i class="fas fa-feather-alt"></i>
+          <h1>BlogHub</h1>
+        </div>
+        <nav class="nav-menu">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="posts.html" class="nav-link active">All Posts</a>
+          <a href="categories.html" class="nav-link">Categories</a>
+          <a href="users.html" class="nav-link admin-only">Users</a>
+          <a href="category-create.html" class="nav-link admin-only">Create Category</a>
+          <a href="post-create.html" class="nav-link">Create Post</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="theme-toggle" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <section class="page-header">
+        <h2>All Blog Posts</h2>
+        <p>Explore posts and discover new topics</p>
+
+        <div class="search-box">
+          <input type="text" id="search-term" placeholder="Search posts..." />
+          <i class="fas fa-search"></i>
+        </div>
+
+        <div class="sort-box">
+          <label for="sort-select">Sort by:</label>
+          <select id="sort-select">
+            <option value="createdAt,desc">Newest First</option>
+            <option value="createdAt,asc">Oldest First</option>
+            <option value="title,asc">Title A-Z</option>
+            <option value="title,desc">Title Z-A</option>
+          </select>
+        </div>
+      </section>
+
+      <section>
+        <div class="posts-grid" id="posts-list"></div>
+        <div id="pagination"></div>
+      </section>
+    </main>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="js/main.js"></script>
+    <script src="js/posts.js"></script>
+    <script>
+      // Check authentication on page load
+      window.addEventListener('DOMContentLoaded', () => {
+        if (!sessionStorage.getItem('userName')) {
+          window.location.href = 'login.html';
+        }
+        updateNavbar();
+        applyRoleBasedUI();
+      });
+    </script>
+  </body>
+</html>

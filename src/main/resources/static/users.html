@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BlogHub - Users</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      #users-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .user-card {
+        background: var(--bg-primary);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+        padding: 1.5rem;
+        text-align: left;
+        transition: transform 0.2s, box-shadow 0.2s;
+        border: 1px solid var(--border-color);
+      }
+
+      .user-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .user-card h3 {
+        font-size: 1.3rem;
+        margin-bottom: 0.75rem;
+        color: var(--primary-color);
+      }
+
+      .user-card p {
+        margin: 0.5rem 0;
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+      }
+
+      .user-card strong {
+        color: var(--text-primary);
+      }
+
+      .user-post-count {
+        font-weight: bold;
+        color: var(--primary-color);
+        margin-top: 0.75rem;
+        padding: 0.5rem;
+        background: var(--bg-secondary);
+        border-radius: var(--radius-sm);
+        text-align: center;
+      }
+
+      .user-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 1rem;
+      }
+
+      .btn-danger {
+        background: var(--danger-color);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .btn-danger:hover {
+        background: #dc2626;
+        transform: translateY(-2px);
+      }
+
+      .create-user-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.875rem 1.5rem;
+        background: var(--primary-color);
+        color: white;
+        text-decoration: none;
+        border-radius: var(--radius-md);
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .create-user-btn:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <header class="navbar">
+      <div class="nav-container">
+        <div class="nav-brand">
+          <i class="fas fa-feather-alt"></i>
+          <h1>BlogHub</h1>
+        </div>
+        <nav class="nav-menu">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="posts.html" class="nav-link">All Posts</a>
+          <a href="categories.html" class="nav-link">Categories</a>
+          <a href="users.html" class="nav-link active admin-only">Users</a>
+          <a href="category-create.html" class="nav-link admin-only">Create Category</a>
+          <a href="post-create.html" class="nav-link">Create Post</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="theme-toggle" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <section class="page-header">
+        <h1>All Users</h1>
+        <p>Manage blog users and authors</p>
+        <div style="margin-top: 1.5rem;">
+          <a href="user-create.html" class="create-user-btn admin-only">
+            <i class="fas fa-user-plus"></i> Create New User
+          </a>
+        </div>
+      </section>
+
+      <div id="alert-container"></div>
+
+      <section id="users-list"></section>
+    </main>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="js/main.js"></script>
+    <script src="js/users.js"></script>
+    <script>
+      // Check authentication on page load
+      window.addEventListener('DOMContentLoaded', () => {
+        if (!sessionStorage.getItem('userName')) {
+          window.location.href = 'login.html';
+        }
+        
+        // Check if user is admin
+        if (sessionStorage.getItem('userRole') !== 'ADMIN') {
+          alert('Access denied. Admin only.');
+          window.location.href = 'index.html';
+        }
+        
+        updateNavbar();
+        applyRoleBasedUI();
+      });
+    </script>
+  </body>
+</html>
