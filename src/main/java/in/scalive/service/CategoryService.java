@@ -29,6 +29,7 @@ public class CategoryService {
 			throw new ResourceAlreadyExistsException("This category name is already present :");
 		}
 		Category category = new Category();
+		category.setCatName(catReq.getCatName());
 		category.setDescription(catReq.getDescr());
 		Category savedCat = cRepo.save(category);
 		return new CategoryResponseDTO(savedCat.getId(), savedCat.getCatName(), savedCat.getDescription());
@@ -48,42 +49,41 @@ public class CategoryService {
 
 	public CategoryResponseDTO getCategoryById(Long id) {
 		Category cat = cRepo.findById(id).orElse(null);
-		if(cat==null) {
-			throw new ResourceNotFoundException("No category present by id  "+id);
+		if (cat == null) {
+			throw new ResourceNotFoundException("No category present by id  " + id);
+		}
+		return new CategoryResponseDTO(cat.getId(), cat.getCatName(), cat.getDescription());
 	}
-	return new CategoryResponseDTO(cat.getId(),cat.getCatName(),cat.getDescription());
-   }
-	
-	//category update method
-	public CategoryResponseDTO updateCategory(Long id , CategoryUpdateDTO dto) {
-		
+
+	// category update method
+	public CategoryResponseDTO updateCategory(Long id, CategoryUpdateDTO dto) {
+
 		Category cat = cRepo.findById(id).orElse(null);
-		if(cat==null) { 
-			throw new ResourceNotFoundException("No category present by id  "+id);
-	}
-		if(dto==null || (dto.getCatName()==null && dto.getDescr()==null)) {
+		if (cat == null) {
+			throw new ResourceNotFoundException("No category present by id  " + id);
+		}
+		if (dto == null || (dto.getCatName() == null && dto.getDescr() == null)) {
 			throw new IllegalArgumentException("At least one field must be present for updating ");
 		}
-		if(dto.getCatName()!=null) {
+		if (dto.getCatName() != null) {
 			cat.setCatName(dto.getCatName());
 		}
-		if(dto.getDescr()!=null) {
+		if (dto.getDescr() != null) {
 			cat.setDescription(dto.getDescr());
 		}
 		Category updatedCat = cRepo.save(cat);
 		return new CategoryResponseDTO(updatedCat.getId(), updatedCat.getCatName(), updatedCat.getDescription());
 
 	}
-	
+
 	public void deleteCategory(Long id) {
 		Category cat = cRepo.findById(id).orElse(null);
-		if(cat==null) { 
-			throw new ResourceNotFoundException("No category present by id  "+id);
-	   }
-		
+		if (cat == null) {
+			throw new ResourceNotFoundException("No category present by id  " + id);
+		}
+
 		cRepo.delete(cat);
-		
+
 	}
-	
 
 }

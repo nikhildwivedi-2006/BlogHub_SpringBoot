@@ -44,7 +44,7 @@ public class SessionAuthInterceptor implements HandlerInterceptor{
 	        String method = request.getMethod();
 	        
 	        if(path.startsWith("/api/categories")) {
-	        	if(!method.equals("GET")&& !userRole.equals("Admin")) {//it means request come from put post and delete  and you are not admin
+	        	if(!method.equals("GET")&& !userRole.equalsIgnoreCase("Admin")) {//it means request come from put post and delete  and you are not admin
 	        		response.setStatus(403);  //Forbidden
 	    	    	response.setContentType("application/json");
 	    	    	PrintWriter pw = response.getWriter();
