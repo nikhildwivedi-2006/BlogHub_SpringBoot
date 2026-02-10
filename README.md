@@ -40,11 +40,12 @@ The project supports **User and Admin roles**, authentication using a **Login In
 
 - Java
 - Spring Boot
-- Spring MVC
 - Spring Data JPA
 - Hibernate
 - MySQL
 - REST APIs
+- Spring Exception Handling
+- Spring lombook
 - Spring Boot Interceptor (Authentication + RBAC)
 
 ---
@@ -58,7 +59,7 @@ The project supports **User and Admin roles**, authentication using a **Login In
 
 Frontend handles:
 - Login & Registration UI
-- Blog listing
+- post handles ( CRUD )
 - Category-based filtering
 - Secure API integration with backend
 
